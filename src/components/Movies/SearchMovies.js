@@ -76,6 +76,7 @@ function Search (e){
                     title : e.data.Title,
                     poster: e.data.Poster,
                     imdbLink: `https://www.omdbapi.com/?apikey=${api}&i=${e.imdbID}`,
+                    imdbId: e.data.imdbID,
                     userID : decodedToken.id
                 },
                 {headers : {"Authorization" : `Bearer ${localStorage.getItem('loginToken')}`}})
