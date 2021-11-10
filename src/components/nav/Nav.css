@@ -1,0 +1,29 @@
+.nav{
+    background-color: rgba(194, 194, 194, 0.671);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 10vh;
+}
+
+.nav ul{
+    display: flex;
+    list-style-type: none;
+    align-items: center;
+}
+.nav li{
+    margin: 20px;
+}
+.navlink{
+    text-decoration: none;
+    font-weight: 600;
+}
+.searchbar{
+    margin: 0 50px;
+    display: flex;
+    align-items: center;
+}
+
+.searchbar button{
+    height: 40px;
+}
