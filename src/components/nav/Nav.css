@@ -19,7 +19,10 @@
     font-weight: 600;
 }
 .searchbar{
-    margin: 0 50px;
+    margin: 0px 50px;
+    position: relative;
+    top: -5px;
+    /* padding-top: 60px; */
     display: flex;
     align-items: center;
 }

@@ -8,6 +8,7 @@ import SignIn from './components/signin/SignIn';
 import { ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import SignOut from './components/signout/SignOut';
+import Search from './components/Movies/SearchMovies';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route exact path="/signup" component={SignUp}/>
           <Route exact path="/signin" component={SignIn}/>
           <Route exact path="/signout" component={SignOut}/>
+          <Route exact path="/search/:data" component={Search}/>
         </Switch>
       </Router>
     </div>
