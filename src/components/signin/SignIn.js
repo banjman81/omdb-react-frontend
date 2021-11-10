@@ -1,16 +1,42 @@
+import jwt from 'jsonwebtoken'
 import React  from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import {useNavigate} from'react-router-dom'
 
 import LoginEmailHooks from "../hooks/loginHooks/LoginEmailHooks"
 import LoginPasswordHooks from '../hooks/loginHooks/LoginPasswordHooks'
 
 import { toast } from "react-toastify";
 import axios from "axios";
-import { Redirect } from "react-router";
+
+import CheckToken from '../hooks/CheckToken'
+
+const { checkJwtToken } = CheckToken()
+
+require('dotenv').config()
 
 
-// export const SignIn = () => {
-function SignIn(){
+
+function SignIn({setUser}){
+    let navigate = useNavigate()
+    const [email, handleEmailOnChange, emailError, setEmailOnFocus, setEmailOnBlur] = LoginEmailHooks()
+    const [password, handlePassowrdOnChange, passwordError, setPasswordOnFocus, setPasswordOnBlur] = LoginPasswordHooks()
+    useEffect(() => {
+        if(checkJwtToken()){
+            navigate('/')
+        }
+    }, [])
+    
+    const notifyLogged = () => toast.success('User already signed in!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    });
+
     const notifySuccess = () => toast.success('User successfully signed in!', {
         position: "top-right",
         autoClose: 3000,
@@ -30,11 +56,6 @@ function SignIn(){
         draggable: true,
         progress: undefined,
     });
-    
-    const [isLoggedin, setIsLoggedin] = useState(false)
-
-    const [email, handleEmailOnChange, emailError, setEmailOnFocus, setEmailOnBlur] = LoginEmailHooks()
-    const [password, handlePassowrdOnChange, passwordError, setPasswordOnFocus, setPasswordOnBlur] = LoginPasswordHooks()
 
     async function handleOnSubmit(e) {
         e.preventDefault()
@@ -47,10 +68,17 @@ function SignIn(){
                 email,
                 password
             })
-            console.log(payload.data.token)
-            notifySuccess()
-            setIsLoggedin(true)
+
+            let decodedToken = jwt.verify(payload.data.token, process.env.REACT_APP_JWT_SECRET)
+
+            setUser({
+                email: decodedToken.email,
+                username : decodedToken.username,
+                userid: decodedToken.id
+            })
             localStorage.setItem("loginToken", payload.data.token)
+            notifySuccess()
+            navigate('/')
         }catch(e){
             let arr = []
             console.log(e.response)
@@ -67,7 +95,7 @@ function SignIn(){
     }
 
     return (
-        <div>{!isLoggedin ?
+        <div>
             <div className="form-div-signin">
                 <main className="form-signin">
                     <form onSubmit={handleOnSubmit}>
@@ -107,8 +135,7 @@ function SignIn(){
                         </button>
                     </form>
                 </main>
-            </div> :
-            <Redirect to="/" />}
+            </div>
         </div>
         
     );

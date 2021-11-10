@@ -1,11 +1,19 @@
-import React from "react";
-import { Redirect } from "react-router";
 
-function SignOut(){
-    localStorage.removeItem("loginToken")
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+
+function SignOut({setUser}){
+    console.log('out1')
+    let navigate = useNavigate()
+    useEffect(() => {
+        setUser(null)
+        localStorage.removeItem("loginToken")
+        navigate('/signin')
+    }, [])
+    
 
     return(
-        <Redirect to="/" />
+        <div></div>
     )
 }
 

@@ -5,15 +5,17 @@ import axios from "axios"
 import React from "react"
 import { Link } from "react-router-dom"
 import {useEffect, useState} from 'react'
+import { useParams } from "react-router";
 
 require('dotenv').config()
 
 
-function Search (e){
+function Search (){
+    let {data} = useParams()
     const [loading, setLoading] = useState(false)
     const [movies, setMovies] = useState([])
     const api = process.env.REACT_APP_API_KEY
-    const search = e.match.params.data.replace(" ", "+")
+    const search = data.replace(" ", "+")
 
     const notifySuccess = () => toast.success('Movie added to favorite!', {
         position: "top-right",
@@ -61,7 +63,6 @@ function Search (e){
             }
         }
         fetchMovies()
-        console.log(movies)
     }, [])
 
     const addFavorite = async (e) => {
@@ -104,7 +105,7 @@ function Search (e){
                                                 </Link>
                                             </td>
                                         </tr>
-                                        <tr>
+                                        <tr style={{height : "400px"}}>
                                             <td style={{textAlign : "center"}}>
                                                 <Link to={`/get-movie/${movie.data.imdbID}`} style={{textDecoration : "none", color: "black"}}>
                                                 <img src={movie.data.Poster} alt="poster" style={{height: "400px", width: "250px", objectFit : "cover"}}/>
@@ -114,7 +115,7 @@ function Search (e){
                                         
                                         <tr style={{height: "50px"}}>
                                             <td>
-                                                <button onClick={()=> addFavorite(movie)}>Add favorite</button>
+                                                <button className="btn" style={{backgroundColor:"rgb(0, 119, 255)", color: 'white', fontWeight: "500"}} onClick={()=> addFavorite(movie)}>Add favorite</button>
                                             </td>
                                         </tr>
                                     </tbody>

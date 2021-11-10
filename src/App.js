@@ -1,5 +1,7 @@
 import './App.css';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import jwt from 'jsonwebtoken'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import Nav from './components/nav/Nav'
 import { Movies } from './components/Movies/Movies';
 import SignUp from './components/signup/Signup';
@@ -12,7 +14,29 @@ import Search from './components/Movies/SearchMovies';
 import Profile from './components/signin/Profile';
 import MovieDetail from './components/Movies/MovieDetail';
 
+import CheckToken from './components/hooks/CheckToken'
+
+const { checkJwtToken } = CheckToken()
+require('dotenv').config()
+
 function App() {
+  const [user, setUser] = useState(null)
+
+  const key = process.env.REACT_APP_JWT_SECRET
+
+  useEffect(() => {
+    let jwtToken = localStorage.getItem("loginToken")
+    let decodedToken = jwt.verify(jwtToken, key)
+      if(!checkJwtToken()){
+        setUser(null)
+      }else{
+        setUser({
+          email: decodedToken.email,
+          username : decodedToken.username,
+          id: decodedToken.id
+        })
+      }
+    }, [])
   return (
     <div className="App">
       <Router>
@@ -25,16 +49,16 @@ function App() {
                 draggable
                 pauseOnHover
             />
-        <Nav />
-        <Switch>
-          <Route exact path="/" component={Movies}/>
-          <Route exact path="/signup" component={SignUp}/>
-          <Route exact path="/signin" component={SignIn}/>
-          <Route exact path="/signout" component={SignOut}/>
-          <Route exact path="/search/:data" component={Search}/>
-          <Route exact path="/profile" component={Profile}/>
-          <Route exact path="/get-movie/:id" component={MovieDetail}/>
-        </Switch>
+        <Nav user={user}/>
+        <Routes>
+          <Route path="/" element={<Movies />}/>
+          <Route path="/signup" element={< SignUp />}/>
+          <Route path="/signin" element={<SignIn setUser={setUser}/>}/>
+          <Route path="/signout" element={< SignOut setUser={setUser}/>}/>
+          <Route path="/search/:data" element={< Search />}/>
+          <Route path="/profile" element={< Profile />}/>
+          <Route path="/get-movie/:id" element={< MovieDetail />}/>
+        </Routes>
       </Router>
     </div>
   );

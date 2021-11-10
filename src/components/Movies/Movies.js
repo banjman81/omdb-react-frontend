@@ -115,7 +115,7 @@ export class Movies extends Component {
                                                     </Link>
                                                 </td>
                                             </tr>
-                                            <tr>
+                                            <tr style={{height : "400px"}}>
                                                 <td style={{textAlign : "center"}}>
                                                     <Link to={`/get-movie/${item.data.imdbID}`} style={{textDecoration : "none", color: "black"}}>
                                                     <img src={item.data.Poster} alt="poster" style={{height: "400px", width: "250px", objectFit : "cover"}}/>
@@ -125,7 +125,7 @@ export class Movies extends Component {
                                             
                                             <tr style={{height: "50px"}}>
                                                 <td>
-                                                    <button onClick={()=> this.addFavorite(item)}>Add favorite</button>
+                                                    <button className="btn" style={{backgroundColor:"rgb(0, 119, 255)", color: 'white', fontWeight: "500"}} onClick={()=> this.addFavorite(item)}>Add favorite</button>
                                                 </td>
                                             </tr>
                                         </tbody>

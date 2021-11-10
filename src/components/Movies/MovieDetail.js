@@ -1,16 +1,18 @@
 import axios from "axios";
 import React from "react";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 
-function MovieDetail(e){
+function MovieDetail(){
     const [movie, setMovie] = useState({})
     const api = process.env.REACT_APP_API_KEY
+    let {id} = useParams()
 
     useEffect(()=>{
         async function getMovie(){
-            console.log(e.match.params.id)
+            console.log(id, '----')
             try{
-                let payload = await axios.get(`https://www.omdbapi.com/?apikey=${api}&i=${e.match.params.id}`)
+                let payload = await axios.get(`https://www.omdbapi.com/?apikey=${api}&i=${id}`)
                 setMovie(payload.data)
                 console.log(payload.data)
             }catch(e){
