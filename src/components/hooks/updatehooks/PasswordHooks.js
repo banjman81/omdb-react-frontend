@@ -18,6 +18,8 @@ function PasswordHooks(){
                 if(isStrongPassword(password)){
                     setError("")
                 }
+            }else{
+                setError("")
             }
             
         }

@@ -28,8 +28,9 @@ function MovieDetail(){
             minHeight: "90vh",
             backgroundImage : `url("${movie.Poster}")`, 
             backgroundRepeat : "no=repeat", 
-            backgroundSize: "100vw"}}>
-            <div style={{opacity : "1", backgroundColor: "rgba(255, 255, 255, 0.7)", minHeight: "90vh"}}>
+            backgroundSize: "100vw",
+            backgroundPositionY: '-250px'}}>
+            <div style={{opacity : "1", backgroundColor: "rgba(255, 255, 255, 0.6)", minHeight: "90vh"}}>
                 <div style={{margin : "0px"}}>
                     <h1>{movie.Title}({movie.Year}, {movie.Rated}, )</h1>
                 </div>

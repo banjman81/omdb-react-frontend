@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import {isStrongPassword} from 'validator'
 
-function PasswordHooks(){
+function ConfirmPasswordHooks(){
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
 
@@ -11,13 +11,11 @@ function PasswordHooks(){
     useEffect(() => {
         if(onFocus){
             if(password.length > 0){
-                if(!isStrongPassword(password)){
-                setError("Password does not meet requirement")
-                }
-
                 if(isStrongPassword(password)){
                     setError("")
                 }
+            }else{
+                setError("")
             }
             
         }
@@ -36,4 +34,4 @@ function PasswordHooks(){
     return [password, handlePasswordOnChange, error, setOnFocus, setOnBlur]
 }
 
-export default PasswordHooks
+export default ConfirmPasswordHooks

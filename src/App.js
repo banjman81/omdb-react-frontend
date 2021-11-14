@@ -1,6 +1,6 @@
 import './App.css';
 import jwt from 'jsonwebtoken'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Nav from './components/nav/Nav'
 import { Movies } from './components/Movies/Movies';
@@ -13,10 +13,10 @@ import SignOut from './components/signout/SignOut';
 import Search from './components/Movies/SearchMovies';
 import Profile from './components/signin/Profile';
 import MovieDetail from './components/Movies/MovieDetail';
+import PrivateRoute from './components/privateRoute/PrivateRoute';
+import ProtectedHome from './components/protectedHome/ProtectedHome';
+import UpdateProfile from './components/signin/UpdateProfile';
 
-import CheckToken from './components/hooks/CheckToken'
-
-const { checkJwtToken } = CheckToken()
 require('dotenv').config()
 
 function App() {
@@ -25,17 +25,26 @@ function App() {
   const key = process.env.REACT_APP_JWT_SECRET
 
   useEffect(() => {
-    let jwtToken = localStorage.getItem("loginToken")
-    let decodedToken = jwt.verify(jwtToken, key)
-      if(!checkJwtToken()){
-        setUser(null)
-      }else{
-        setUser({
-          email: decodedToken.email,
-          username : decodedToken.username,
-          id: decodedToken.id
-        })
+    try{
+      let jwtToken = localStorage.getItem("loginToken")
+      if(jwtToken){
+        let decodedToken = jwt.verify(jwtToken, key)
+        if(decodedToken.exp < Date.now()/1000){
+          setUser(null)
+        }else{
+          setUser({
+            email: decodedToken.email,
+            username : decodedToken.username,
+            id: decodedToken.id
+          })
+        }
+          
       }
+    }catch(e){
+      localStorage.removeItem("loginToken")
+      setUser(null)
+    }
+    
     }, [])
   return (
     <div className="App">
@@ -52,12 +61,21 @@ function App() {
         <Nav user={user}/>
         <Routes>
           <Route path="/" element={<Movies />}/>
+          <Route path="/profile" 
+            element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>}/>
           <Route path="/signup" element={< SignUp />}/>
           <Route path="/signin" element={<SignIn setUser={setUser}/>}/>
           <Route path="/signout" element={< SignOut setUser={setUser}/>}/>
           <Route path="/search/:data" element={< Search />}/>
-          <Route path="/profile" element={< Profile />}/>
           <Route path="/get-movie/:id" element={< MovieDetail />}/>
+          <Route path="/update-profile" 
+            element={
+            <PrivateRoute>
+              <UpdateProfile />
+            </PrivateRoute>}/>
         </Routes>
       </Router>
     </div>

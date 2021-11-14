@@ -9,14 +9,20 @@ function CheckToken() {
         let jwtToken = localStorage.getItem("loginToken") 
         
         if(jwtToken){
-            
-            let decodedToken = jwt.verify(jwtToken, key)
-            if(decodedToken.exp < Date.now()/1000){
+            try{
+                let decodedToken = jwt.verify(jwtToken, key)
+                if(decodedToken.exp < Date.now()/1000){
+                    localStorage.removeItem("loginToken")
+                    return false
+                }else{
+                    return true
+                }
+            }catch(e){
                 localStorage.removeItem("loginToken")
                 return false
-            }else{
-                return true
             }
+            
+            
         }else{
             return false
         }

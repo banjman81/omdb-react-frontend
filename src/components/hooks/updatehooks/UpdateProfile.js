@@ -1,39 +1,35 @@
+import React from 'react'
+import jwt from 'jsonwebtoken'
 import axios from "axios";
-import React from "react";
 import {useNavigate} from'react-router-dom'
-import { useState, useEffect } from "react";
-
-import "./user.css"
-
-import CheckToken from '../hooks/CheckToken'
 
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
-import EmailHooks from "../hooks/EmailHooks";
+import '../signup/user.css'
+
+
 import FirstNameHooks from "../hooks/FirstNameHooks";
 import LastNameHooks from "../hooks/LastNameHooks";
-import PasswordHooks from "../hooks/PasswordHooks";
+import PasswordHooks from "../hooks/updatehooks/PasswordHooks";
 import UsernameHooks from "../hooks/UsernameHooks";
-import ConfirmPasswordHooks from "../hooks/ConfirmPasswordHooks";
+import ConfirmPasswordHooks from "../hooks/updatehooks/ConfirmPasswordHooks";
 
+function UpdateProfile() {
 
+    
+    const key = process.env.REACT_APP_JWT_SECRET
+    let jwtToken = localStorage.getItem("loginToken") 
 
-const { checkJwtToken } = CheckToken()
+    let decodedToken = jwt.verify(jwtToken, key)
 
+    console.log(decodedToken)
 
-// export const SignUp = () => {
-function SignUp(){
-
-    let navigate = useNavigate()
-
-    const [signedup, setSignedup] = useState(false)
-
-    useEffect(() => {
-        if(checkJwtToken()){
-            navigate('/')
-        }
-    }, [])
+    const [firstName, handleFirstNameOnChange, firstNameError, setFirstNameOnFocus, setFirstNameOnBlur] = FirstNameHooks()
+    const [lastName, handleLastNameOnChange, lastNameError, setOnFocus, setOnBlur] = LastNameHooks()
+    const [password, handlePasswordOnChange, passwordError, setPasswordOnFocus, setPasswordOnBlur] = PasswordHooks()
+    const [confirmPassword, handleConfirmPasswordOnChange, confirmPasswordError, setConfirmPasswordOnFocus, setConfirmPasswordOnBlur] = ConfirmPasswordHooks()
+    const [username, handleUsernameOnChange, usernameError, setUsernameOnFocus, setUsernameOnBlur] = UsernameHooks()
 
     const notifySuccess = () => toast.success('User successfully created!', {
         position: "top-right",
@@ -55,29 +51,21 @@ function SignUp(){
         progress: undefined,
         });
 
-    const [firstName, handleFirstNameOnChange, firstNameError, setFirstNameOnFocus, setFirstNameOnBlur] = FirstNameHooks()
-    const [lastName, handleLastNameOnChange, lastNameError, setOnFocus, setOnBlur] = LastNameHooks()
-    const [password, handlePasswordOnChange, passwordError, setPasswordOnFocus, setPasswordOnBlur] = PasswordHooks()
-    const [confirmPassword, handleConfirmPasswordOnChange, confirmPasswordError, setConfirmPasswordOnFocus, setConfirmPasswordOnBlur] = ConfirmPasswordHooks()
-    const [username, handleUsernameOnChange, usernameError, setUsernameOnFocus, setUsernameOnBlur] = UsernameHooks()
-    const [email, handleEmailOnChange, emailError, setEmailOnFocus, setEmailOnBlur] = EmailHooks()
-
     async function handleOnSubmit(e) {
         e.preventDefault()
         
         try {
-            let payload = await axios.post("http://localhost:3001/users/create-user",
+            let payload = await axios.put("http://localhost:3001/users/update-user",
             {
                 firstName,
                 lastName,
                 username,
-                email,
                 password,
                 confirmPassword
-            })
+            },
+            {headers : {"Authorization" : `Bearer ${localStorage.getItem('loginToken')}`}})
             console.log(payload)
             notifySuccess()
-            navigate("/signin")
         }catch(e){
             let arr = []
             console.log(e.response)
@@ -92,27 +80,25 @@ function SignUp(){
             }
         }
     }
-
     return (
         <div>
-            {signedup ? navigate('/') : <div className="form-div-signin">
+            <div className="form-div-signin">
                 <main className="form-signin">
                     <form onSubmit={handleOnSubmit}>
-                        <h1 className="h3 mb-3 fw-normal">Please sign up</h1>
+                        <h1 className="h3 mb-3 fw-normal">Update User Information</h1>
                 
                         <div className="form-floating" >
                             <input
                             style={{border : `1px solid ${firstNameError.length > 0 ? "rgba(241, 62, 62, 0.7)" : "rgba(0, 0, 0, 0.2)"}`, boxShadow : `0 0  ${firstNameError.length > 0 ? "rgba(241, 62, 62, 0.7)" : ""}`}}
                             name={firstName} 
                             onChange={handleFirstNameOnChange}
-                            onFocus={() => setFirstNameOnFocus(true)} 
-                            onBlur={() => setFirstNameOnBlur(true) }
+                            onFocus={() => setFirstNameOnFocus(true)}
                             type="text"
                             className="form-control"
                             id="firstName"
                             placeholder="First name"
                             />
-                            <label htmlFor="floatingInput" style={{opacity : "0.8"}}>{firstNameError.length > 0 ? <span style={{color : 'red'}}>{firstNameError}</span>  : ("First Name")}</label>
+                            <label htmlFor="floatingInput" style={{opacity : "0.8"}}>{firstNameError.length > 0 ? <span style={{color : 'red'}}>{firstNameError}</span>  : (`${decodedToken.firstName}`)}</label>
                         </div>
 
                         <div className="form-floating">
@@ -121,13 +107,12 @@ function SignUp(){
                             name={lastName} 
                             onChange={handleLastNameOnChange}
                             onFocus={() => setOnFocus(true)} 
-                            onBlur={() => setOnBlur(true) }
                             type="text"
                             className="form-control"
                             id="lastName"
                             placeholder="Last name"
                             />
-                            <label htmlFor="floatingInput" style={{opacity : "0.8"}}>{lastNameError.length > 0 ? <span style={{color : 'red'}}>{lastNameError}</span>  : ("Last Name")}</label>
+                            <label htmlFor="floatingInput" style={{opacity : "0.8"}}>{lastNameError.length > 0 ? <span style={{color : 'red'}}>{lastNameError}</span>  : (`${decodedToken.lastName}`)}</label>
                         </div>
 
                         <div className="form-floating">
@@ -135,29 +120,13 @@ function SignUp(){
                             style={{border : `1px solid ${usernameError.length > 0 ? "rgba(241, 62, 62, 0.7)" : "rgba(0, 0, 0, 0.2)"}`, boxShadow : `0 0  ${usernameError.length > 0 ? "rgba(241, 62, 62, 0.7)" : ""}`}}
                             name={username} 
                             onChange={handleUsernameOnChange} 
-                            onFocus={() => setUsernameOnFocus(true)} 
-                            onBlur={() => setUsernameOnBlur(true)}
+                            // onFocus={() => setUsernameOnFocus(true)} 
                             type="text"
                             className="form-control"
                             id="username"
                             placeholder="Username"
                             />
-                            <label htmlFor="floatingInput" style={{opacity : "0.8"}}>{usernameError.length > 0 ? <span style={{color : 'red'}}>{usernameError}</span>  : ("Username")}</label>
-                        </div>
-                
-                        <div className="form-floating">
-                            <input
-                            style={{border : `1px solid ${emailError.length > 0 ? "rgba(241, 62, 62, 0.7)" : "rgba(0, 0, 0, 0.2)"}`, boxShadow : `0 0  ${emailError.length > 0 ? "rgba(241, 62, 62, 0.7)" : ""}`}}
-                            name={email} 
-                            onChange={handleEmailOnChange}
-                            onFocus={()=> setEmailOnFocus(true)} 
-                            onBlur={()=> setEmailOnBlur(true)}
-                            type="email"
-                            className="form-control"
-                            id="floatingInput"
-                            placeholder="name@example.com"
-                            />
-                            <label htmlFor="floatingInput" style={{opacity : "0.8"}}>{emailError.length > 0 ? <span style={{color : 'red'}}>{emailError}</span>  : ("Email")}</label>
+                            <label htmlFor="floatingInput" style={{opacity : "0.8"}}>{usernameError.length > 0 ? <span style={{color : 'red'}}>{usernameError}</span>  : (`${decodedToken.username}`)}</label>
                         </div>
 
                         <div className="form-floating">
@@ -167,7 +136,6 @@ function SignUp(){
                             name={password} 
                             onChange={handlePasswordOnChange}
                             onFocus={()=> setPasswordOnFocus(true)} 
-                            onBlur={()=> setPasswordOnBlur(true)}
                             className="form-control"
                             id="floatingPassword"
                             placeholder="Password"
@@ -181,8 +149,7 @@ function SignUp(){
                             type="password"
                             name={confirmPassword} 
                             onChange={handleConfirmPasswordOnChange}
-                            onFocus={()=> setConfirmPasswordOnFocus(true)} 
-                            onBlur={()=> setConfirmPasswordOnBlur(true)}
+                            onFocus={()=> setConfirmPasswordOnFocus(true)}
                             className="form-control"
                             id="floatingPassword"
                             placeholder="Password"
@@ -191,13 +158,13 @@ function SignUp(){
                         </div>
                 
                         <button className="w-100 btn btn-lg btn-primary" type="submit">
-                            Sign up
+                            Update
                         </button>
                     </form>
                 </main>
             </div>
-        }</div>
-    );
+        </div>
+    )
 }
 
-export default SignUp;
+export default UpdateProfile
