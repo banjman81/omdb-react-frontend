@@ -23,11 +23,11 @@ function UpdateProfile() {
 
     let decodedToken = jwt.verify(jwtToken, key)
 
-    let [firstName, handleFirstNameOnChange, firstNameError, setFirstNameOnFocus, setFirstNameOnBlur] = FirstNameHooks()
-    let [lastName, handleLastNameOnChange, lastNameError, setOnFocus, setOnBlur] = LastNameHooks()
-    let [password, handlePasswordOnChange, passwordError, setPasswordOnFocus, setPasswordOnBlur] = PasswordHooks()
-    let [confirmPassword, handleConfirmPasswordOnChange, confirmPasswordError, setConfirmPasswordOnFocus, setConfirmPasswordOnBlur] = ConfirmPasswordHooks()
-    let [username, handleUsernameOnChange, usernameError, setUsernameOnFocus, setUsernameOnBlur] = UsernameHooks()
+    let [firstName, handleFirstNameOnChange, firstNameError, setFirstNameOnFocus] = FirstNameHooks()
+    let [lastName, handleLastNameOnChange, lastNameError, setOnFocus] = LastNameHooks()
+    let [password, handlePasswordOnChange, passwordError, setPasswordOnFocus] = PasswordHooks()
+    let [confirmPassword, handleConfirmPasswordOnChange, confirmPasswordError, setConfirmPasswordOnFocus] = ConfirmPasswordHooks()
+    let [username, handleUsernameOnChange, usernameError] = UsernameHooks()
 
     const notifySuccess = (input) => toast.success(input, {
         position: "top-right",
@@ -54,15 +54,19 @@ function UpdateProfile() {
         
         try {
             if(firstName.length === 0){
+                console.log(true, 1)
                 firstName = decodedToken.firstName
             }
             if(lastName.length === 0){
+                console.log(true, 2)
                 lastName = decodedToken.lastName
             }
             if(username.length === 0){
+                console.log(true, 3)
                 username = decodedToken.username
             }
             if(password.length === 0 ){
+                console.log(true, 4)
                 let payload = await axios.put("http://localhost:3001/users/update-user",
                 {
                     firstName,
@@ -70,9 +74,8 @@ function UpdateProfile() {
                     username
                 },
                 {headers : {"Authorization" : `Bearer ${localStorage.getItem('loginToken')}`}})
-                console.log(payload)
-                notifySuccess()
-                navigate('/')
+                notifySuccess("successfully updated user.")
+                navigate('/profile')
                 
             }else{
                 let payload = await axios.put("http://localhost:3001/users/update-user",
@@ -84,10 +87,8 @@ function UpdateProfile() {
                     confirmPassword
                 },
                 {headers : {"Authorization" : `Bearer ${localStorage.getItem('loginToken')}`}})
-                console.log(payload)
-                notifySuccess("successfully updated user. You are now require to relog.")
-                localStorage.removeItem("loginToken")
-                navigate('/signin')
+                notifySuccess("successfully updated user.")
+                navigate('/profile')
             }
             
         }catch(e){
@@ -122,7 +123,7 @@ function UpdateProfile() {
                             id="firstName"
                             placeholder="First name"
                             />
-                            <label htmlFor="floatingInput" style={{opacity : "0.8"}}>{firstNameError.length > 0 ? <span style={{color : 'red'}}>{firstNameError}</span>  : (`${decodedToken.firstName}`)}</label>
+                            <label htmlFor="floatingInput" style={{opacity : "0.8"}}>{firstNameError.length > 0 ? <span style={{color : 'red'}}>{firstNameError}</span>  : ("First Name")}</label>
                         </div>
 
                         <div className="form-floating">
@@ -136,7 +137,7 @@ function UpdateProfile() {
                             id="lastName"
                             placeholder="Last name"
                             />
-                            <label htmlFor="floatingInput" style={{opacity : "0.8"}}>{lastNameError.length > 0 ? <span style={{color : 'red'}}>{lastNameError}</span>  : (`${decodedToken.lastName}`)}</label>
+                            <label htmlFor="floatingInput" style={{opacity : "0.8"}}>{lastNameError.length > 0 ? <span style={{color : 'red'}}>{lastNameError}</span>  : ("Last Name")}</label>
                         </div>
 
                         <div className="form-floating">
@@ -150,7 +151,7 @@ function UpdateProfile() {
                             id="username"
                             placeholder="Username"
                             />
-                            <label htmlFor="floatingInput" style={{opacity : "0.8"}}>{usernameError.length > 0 ? <span style={{color : 'red'}}>{usernameError}</span>  : (`${decodedToken.username}`)}</label>
+                            <label htmlFor="floatingInput" style={{opacity : "0.8"}}>{usernameError.length > 0 ? <span style={{color : 'red'}}>{usernameError}</span>  : ("Username")}</label>
                         </div>
 
                         <div className="form-floating">

@@ -6,7 +6,6 @@ function FirstNameHooks() {
     const [ error, setError ] = useState("")
 
     const [onFocus, setOnFocus] = useState(false)
-    const [onBlur, setOnBlur] = useState(false)
 
     useEffect(() => {
         if(onFocus) {
@@ -20,21 +19,13 @@ function FirstNameHooks() {
                 }
             }
         }
-        if(onBlur){
-            if (firstName.length === 0){
-                setError("First name cannot be empty")
-            }
-        }
-        if(firstName.length === 0){
-            setError("")
-        }
-    }, [firstName, onFocus, onBlur])
+    }, [firstName, onFocus])
 
     function handleFirstNameOnChange(e){
             setFirstName(e.target.value)
         }
 
-    return [firstName, handleFirstNameOnChange, error, setOnFocus, setOnBlur]
+    return [firstName, handleFirstNameOnChange, error, setOnFocus]
 }
 
 export default FirstNameHooks;

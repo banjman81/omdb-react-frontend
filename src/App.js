@@ -14,7 +14,6 @@ import Search from './components/Movies/SearchMovies';
 import Profile from './components/signin/Profile';
 import MovieDetail from './components/Movies/MovieDetail';
 import PrivateRoute from './components/privateRoute/PrivateRoute';
-import ProtectedHome from './components/protectedHome/ProtectedHome';
 import UpdateProfile from './components/signin/UpdateProfile';
 
 require('dotenv').config()

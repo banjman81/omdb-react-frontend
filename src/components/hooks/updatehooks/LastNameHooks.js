@@ -6,7 +6,6 @@ function LastNameHooks() {
     const [ error, setError ] = useState("")
 
     const [onFocus, setOnFocus] = useState(false)
-    const [onBlur, setOnBlur] = useState(false)
 
     useEffect(() => {
         if(onFocus) {
@@ -20,21 +19,16 @@ function LastNameHooks() {
                 }
             }
         }
-        if(onBlur){
-            if (lastName.length === 0){
-                setError("last name cannot be empty")
-            }
-        }
         if(lastName.length === 0){
             setError("")
         }
-    }, [lastName, onFocus, onBlur])
+    }, [lastName, onFocus])
 
     function handleLastNameOnChange(e){
             setLastName(e.target.value)
         }
 
-    return [lastName, handleLastNameOnChange, error, setOnFocus, setOnBlur]
+    return [lastName, handleLastNameOnChange, error, setOnFocus]
 }
 
 export default LastNameHooks;

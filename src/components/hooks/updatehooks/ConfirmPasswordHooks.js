@@ -6,7 +6,6 @@ function ConfirmPasswordHooks(){
     const [error, setError] = useState("")
 
     const [onFocus, setOnFocus] = useState(false)
-    const [onBlur, setOnBlur] = useState(false)
 
     useEffect(() => {
         if(onFocus){
@@ -19,19 +18,13 @@ function ConfirmPasswordHooks(){
             }
             
         }
-
-        if(onBlur){
-            if(password.length === 0){
-                setError("password cannot be empty")
-            }
-        }
-    }, [password, onBlur, onFocus])
+    }, [password, onFocus])
 
     function handlePasswordOnChange(e){
         setPassword(e.target.value)
     }
 
-    return [password, handlePasswordOnChange, error, setOnFocus, setOnBlur]
+    return [password, handlePasswordOnChange, error, setOnFocus]
 }
 
 export default ConfirmPasswordHooks
